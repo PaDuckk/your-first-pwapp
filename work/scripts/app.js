@@ -321,7 +321,7 @@
 
   // TODO add startup code here
   app.selectedCities = localStorage.selectedCities;
-  console.log(app.selectedCities);
+  
   if(app.selectedCities){
     app.selectedCities = JSON.parse(app.selectedCities);
     app.selectedCities.forEach(function(city){
@@ -337,4 +337,10 @@
 
 
   // TODO add service worker code here
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker
+            .register('./service-worker.js')
+            .then(function(){ console.log('Service Worker Registered');});
+  }
+  
 })();
