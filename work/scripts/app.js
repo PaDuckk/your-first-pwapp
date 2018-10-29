@@ -49,10 +49,18 @@
     var select = document.getElementById('selectCityToAdd');
     var selected = select.options[select.selectedIndex];
     var key = selected.value;
+
     var label = selected.textContent;
+    console.log(key);
+    console.log(label);
     // TODO init the app.selectedCities array here
-    app.getForecast(key, label);
-    // TODO push the selected city to the array and save here
+    if(!app.selectedCities){
+      app.selectedcities = [];
+    }
+    var forecast = app.getForecast(key, label);
+    console.log(forecast);
+    app.selectedCities.push({'key' :key, 'label': label});
+    app.saveSelectedCities();
     app.toggleAddDialog(false);
   });
 
@@ -197,6 +205,12 @@
   };
 
   // TODO add saveSelectedCities function here
+  // Save list of cities to localStorage.
+  app.saveSelectedCities = function(){
+    var selectedCities = JSON.stringify(app.selectedCities);
+    console.log(selectedCities)
+    localStorage.selectedCities = selectedCities;
+  };
 
   app.getIconClass = function(weatherCode) {
     // Weather codes: https://developer.yahoo.com/weather/documentation.html#codes
@@ -303,9 +317,24 @@
     }
   };
   // TODO uncomment line below to test app with fake data
-  app.updateForecastCard(initialWeatherForecast);
+  
 
   // TODO add startup code here
+  app.selectedCities = localStorage.selectedCities;
+  console.log(app.selectedCities);
+  if(app.selectedCities){
+    app.selectedCities = JSON.parse(app.selectedCities);
+    app.selectedCities.forEach(function(city){
+      app.getForecast(city.key,city.label);
+    });
+  }else{
+    app.updateForecastCard(initialWeatherForecast);
+    app.selectedCities = [
+      {key: initialWeatherForecast, label : initialWeatherForecast.label}
+    ];
+    app.saveSelectedCities();
+  }
+
 
   // TODO add service worker code here
 })();
